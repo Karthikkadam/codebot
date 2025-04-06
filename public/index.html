@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Studio | Generator & Compiler</title>
+    <!-- Include combined styles -->
+    <link rel="stylesheet" href="styles.css">
+    <!-- Google Fonts: Poppins for modern typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <!-- Boxicons for icons -->
+    <link href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <!-- CodeMirror CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/dracula.min.css">
+    <!-- XTerm CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xterm@5.3.0/css/xterm.css" />
+    <!-- CodeMirror and XTerm scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/clike/clike.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/htmlmixed/htmlmixed.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/css/css.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xterm@5.3.0/lib/xterm.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xterm-addon-fit@0.8.0/lib/xterm-addon-fit.js"></script>
+</head>
+<body>
+    <div class="app-header">
+        <div class="logo">
+            <i class='bx bx-code-alt'></i>
+            <h1>Code Studio</h1>
+        </div>
+        <div class="theme-toggle">
+            <i class='bx bx-sun'></i>
+        </div>
+    </div>
+    
+    <div class="main-container">
+        <!-- Code Generator Section -->
+        <div id="code-generator" class="section">
+            <div class="container">
+                <div class="section-header">
+                    <h2><i class='bx bx-bot'></i> AI Code Generator</h2>
+                    <p class="section-description">Ask me to generate code, explain concepts, or help debug issues</p>
+                </div>
+                
+                <div class="chat-interface">
+                    <div id="gen-output" class="chat-messages"></div>
+                    
+                    <div class="input-area">
+                        <div class="InputContainer">
+                            <input placeholder="Type your message..." id="gen-userInput" class="input" name="text" type="text">
+                            <button class="send-btn" id="send-btn">
+                                <i class='bx bx-send'></i>
+                            </button>
+                        </div>
+                        
+                        <div class="action-buttons">
+                            <button id="togglePlayground" class="action-btn">
+                                <i class='bx bx-code-block'></i>
+                                Code Playground
+                            </button>
+                            <button id="newChatBtn" class="action-btn">
+                                <i class='bx bx-plus'></i>
+                                New Chat
+                            </button>
+                            <button id="chatHistoryBtn" class="action-btn">
+                                <i class='bx bx-history'></i>
+                                Chat History
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Compiler Section -->
+        <div id="compiler" class="section" style="display: none;">
+            <div class="container">
+                <header>
+                    <div class="header-left">
+                        <i class='bx bx-code-curly'></i>
+                        <h1>Code Playground</h1>
+                    </div>
+                    <div class="header-right">
+                        <select id="comp-language" class="language-selector">
+                            <option value="python">Python</option>
+                            <option value="java">Java</option>
+                            <option value="javascript">JavaScript</option>
+                            <option value="cpp">C++</option>
+                            <option value="html">HTML/CSS</option>
+                        </select>
+                    </div>
+                </header>
+                
+                <div class="controls">
+                    <div class="control-group">
+                        <button id="comp-run-btn" class="control-btn run-btn">
+                            <i class='bx bx-play'></i> Run
+                        </button>
+                        <button id="comp-download-btn" class="control-btn">
+                            <i class='bx bx-download'></i> Download
+                        </button>
+                    </div>
+                    <div class="control-group">
+                        <button id="comp-toggle-explorer-btn" class="control-btn">
+                            <i class='bx bx-folder'></i> Files
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- File Explorer Sidebar -->
+                <aside class="file-explorer">
+                    <div class="explorer-header">
+                        <h3><i class='bx bx-folder-open'></i> Explorer</h3>
+                        <button id="comp-refreshExplorer" class="refresh-btn">
+                            <i class='bx bx-refresh'></i>
+                        </button>
+                    </div>
+                    
+                    <div id="comp-currentPath" class="path-display">/ (session root)</div>
+                    
+                    <div class="files-container">
+                        <ul id="comp-explorerList" class="files-list"></ul>
+                    </div>
+                    
+                    <div class="explorer-actions">
+                        <input type="text" id="comp-newItemName" placeholder="New file/folder name" />
+                        <div class="explorer-buttons">
+                            <button id="comp-createFileBtn" class="explorer-btn">
+                                <i class='bx bx-file'></i> New File
+                            </button>
+                            <button id="comp-createFolderBtn" class="explorer-btn">
+                                <i class='bx bx-folder-plus'></i> New Folder
+                            </button>
+                        </div>
+                    </div>
+                </aside>
+                
+                <main class="main-content">
+                    <div class="editor-container">
+                        <div class="editor-header">
+                            <span class="current-file">editing: <span class="file-name">code.py</span></span>
+                            <div class="editor-actions">
+                                <button class="editor-btn">
+                                    <i class='bx bx-save'></i>
+                                </button>
+                            </div>
+                        </div>
+                        <textarea id="comp-code-editor"></textarea>
+                        <textarea id="comp-css-editor" style="display: none;"></textarea>
+                    </div>
+                    
+                    <div class="input-output-container">
+                        <!-- Only have the output container which will be used for all language types -->
+                        <div class="output-container">
+                            <div class="io-header">
+                                <label>Output / Preview</label>
+                            </div>
+                            <div id="comp-output" class="output-pane"></div>
+                            <iframe id="comp-preview" class="output-pane" style="display: none;"></iframe>
+                        </div>
+                    </div>
+                    
+                    <div class="terminal-container">
+                        <div class="terminal-header">
+                            <span>Terminal</span>
+                            <button id="comp-fullscreen-btn" class="terminal-btn">
+                                <i class='bx bx-fullscreen'></i>
+                            </button>
+                        </div>
+                        <div id="comp-terminal" class="terminal-window"></div>
+                    </div>
+                </main>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Include combined JavaScript (unchanged) -->
+    <script src="script.js"></script>
+
+    <!-- Chat History Dropdown -->
+    <div id="chatHistoryDropdown" class="history-dropdown" style="display: none;">
+        <div class="history-header">
+            <h3>Chat History</h3>
+            <button id="closeHistoryBtn" class="close-btn">
+                <i class='bx bx-x'></i>
+            </button>
+        </div>
+        <div class="history-list" id="chatHistoryList">
+            <!-- Chat history items will be added here -->
+        </div>
+    </div>
+</body>
+</html>

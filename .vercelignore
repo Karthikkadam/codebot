@@ -1,0 +1,18 @@
+# Dependencies
+node_modules
+
+# Temporary files
+tmp
+*.log
+*.temp
+
+# Development files
+.git
+.github
+.idea
+.vscode
+
+# Large files
+*.mp4
+*.zip
+*.tar.gz 
